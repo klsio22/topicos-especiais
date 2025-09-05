@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000
 @json = application/json
-@userId = 1
+@userId = 2
 
 ### 1. Listar todos os usuários
 # @name listUsers
