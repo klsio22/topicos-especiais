@@ -3,7 +3,7 @@ import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  private readonly users: User[] = [];
 
   create(user: Omit<User, 'id'>): User {
     const newUser: User = {
