@@ -34,7 +34,7 @@ GET http://localhost:3000/users
 GET http://localhost:3000/users?filter=João&page=1
 
 ### Teste 4: Buscar Usuário por ID
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/2
 
 ### Teste 5: Buscar Usuário com ID Inválido
 GET http://localhost:3000/users/abc
