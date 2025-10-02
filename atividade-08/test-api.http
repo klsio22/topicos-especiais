@@ -1,0 +1,20 @@
+# Testes para Atividade 08 - Middleware, Interceptor e Filtro de Exceção
+# Observação: rode o servidor antes: npm run start:dev
+
+### Teste 1: Requisição SEM token de autorização (deve retornar 401)
+GET http://localhost:3000/users
+
+### Teste 2: Requisição COM token de autorização (interceptor envolve resposta)
+GET http://localhost:3000/users
+Authorization: Bearer fake-token
+
+### Teste 3: Buscar usuário válido (id=1) com token
+GET http://localhost:3000/users/1
+Authorization: Bearer fake-token
+
+### Teste 4: Buscar usuário inválido (id=2) com token (filtro customiza erro 404)
+GET http://localhost:3000/users/2
+Authorization: Bearer fake-token
+
+### Teste 5: Buscar usuário sem token (middleware bloqueia antes)
+GET http://localhost:3000/users/1
