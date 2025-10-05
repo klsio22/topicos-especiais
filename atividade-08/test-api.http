@@ -1,20 +1,66 @@
 # Testes para Atividade 08 - Middleware, Interceptor e Filtro de Exceção
 # Observação: rode o servidor antes: npm run start:dev
+```http
+# Testes para Atividade 08 - Middleware, Interceptor e Filtro de Exceção
+# Observação: rode o servidor antes: npm run start:dev
 
-### Teste 1: Requisição SEM token de autorização (deve retornar 401)
+### TESTE 1 - MIDDLEWARE: Requisição SEM cabeçalho Authorization (esperado 401)
 GET http://localhost:3000/users
 
-### Teste 2: Requisição COM token de autorização (interceptor envolve resposta)
+# Esperado (HTTP 401):
+# {
+#   "message": "Token não fornecido"
+# }
+
+### TESTE 2 - MIDDLEWARE: Requisição COM Bearer Token (esperado 200)
 GET http://localhost:3000/users
 Authorization: Bearer fake-token
 
-### Teste 3: Buscar usuário válido (id=1) com token
-GET http://localhost:3000/users/1
+# Esperado (HTTP 200) — Interceptor deve envolver a resposta:
+# {
+#   "success": true,
+#   "data": [ { "id": 1, "name": "John Doe" } ]
+# }
+
+### TESTE 3 - INTERCEPTOR: Requisição COM Basic Auth (esperado 200)
+GET http://localhost:3000/users
+Authorization: Basic dGVzdGU6dGVzdGUxMjM=
+# Nota: dGVzdGU6dGVzdGUxMjM= é "teste:teste123" em Base64
+
+# Esperado (HTTP 200):
+# {
+#   "success": true,
+#   "data": [ { "id": 1, "name": "John Doe" } ]
+# }
+
+### TESTE 4 - FILTRO: Usuário inexistente (esperado 404)
+GET http://localhost:3000/users/999
 Authorization: Bearer fake-token
 
-### Teste 4: Buscar usuário inválido (id=2) com token (filtro customiza erro 404)
-GET http://localhost:3000/users/2
-Authorization: Bearer fake-token
+# Esperado (HTTP 404):
+# {
+#   "statusCode": 404,
+#   "message": "Usuário não encontrado",
+#   "timestamp": "2024-11-08T12:00:00.000Z"
+# }
 
-### Teste 5: Buscar usuário sem token (middleware bloqueia antes)
-GET http://localhost:3000/users/1
+### TESTE 5 - FILTRO: Usuário inexistente usando Basic Auth (esperado 404)
+GET http://localhost:3000/users/999
+Authorization: Basic dGVzdGU6dGVzdGUxMjM=
+
+# Esperado (HTTP 404):
+# {
+#   "statusCode": 404,
+#   "message": "Usuário não encontrado",
+#   "timestamp": "..."
+# }
+
+### TESTE 6 - COMPORTAMENTO: Sem Auth + ID inválido (middleware deve bloquear primeiro)
+GET http://localhost:3000/users/999
+
+# Esperado (HTTP 401):
+# {
+#   "message": "Token não fornecido"
+# }
+
+``` 
