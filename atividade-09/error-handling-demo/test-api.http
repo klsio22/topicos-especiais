@@ -1,0 +1,63 @@
+### Testes para Error Handling Demo - atividade-09
+# Observação: rode o servidor antes: npm run start:dev
+
+### 1) Recurso existente (id = 1) - deve retornar 200
+GET http://localhost:3000/errors/1
+
+# Esperado (200):
+# { "id": "1", "message": "Recurso encontrado" }
+
+### 2) Recurso inexistente (id = 2) - NotFoundException
+GET http://localhost:3000/errors/2
+
+# Esperado (404):
+# {
+#   "statusCode": 404,
+#   "timestamp": "2025-10-11T12:00:00.000Z",
+#   "path": "/errors/2",
+#   "message": "Recurso não encontrado"
+# }
+
+### 3) BadRequestException
+GET http://localhost:3000/errors/bad-request
+
+# Esperado (400):
+# {
+#   "statusCode": 400,
+#   "timestamp": "...",
+#   "path": "/errors/bad-request",
+#   "message": "Requisição inválida - parâmetros errados"
+# }
+
+### 4) ForbiddenException
+GET http://localhost:3000/errors/forbidden
+
+# Esperado (403):
+# {
+#   "statusCode": 403,
+#   "timestamp": "...",
+#   "path": "/errors/forbidden",
+#   "message": "Acesso proibido a este recurso"
+# }
+
+### 5) HttpException simples (HttpStatus.FORBIDDEN)
+GET http://localhost:3000/errors/http-exception-simple
+
+# Esperado (403):
+# {
+#   "statusCode": 403,
+#   "timestamp": "...",
+#   "path": "/errors/http-exception-simple",
+#   "message": "Acesso proibido"
+# }
+
+### 6) Exceção personalizada
+GET http://localhost:3000/errors/custom-error
+
+# Esperado (400):
+# {
+#   "statusCode": 400,
+#   "timestamp": "...",
+#   "path": "/errors/custom-error",
+#   "message": "Este é um erro personalizado"
+# }
