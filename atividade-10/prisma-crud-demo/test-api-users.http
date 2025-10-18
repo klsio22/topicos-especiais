@@ -1,0 +1,44 @@
+### Create user (Alice)
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name": "Alice Silva",
+  "email": "alice.silva@example.com",
+  "age": 28
+}
+
+### Create user (Bob)
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name": "Bob Souza",
+  "email": "bob.souza@example.com",
+  "age": 35
+}
+
+### List all users
+GET http://localhost:3000/users
+
+### Get one user by id (troque o 1 pelo id real retornado no create)
+GET http://localhost:3000/users/1
+
+### Update user
+PATCH http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+  "name": "Alice S.",
+  "age": 29
+}
+
+### Delete user
+DELETE http://localhost:3000/users/1
+
+### Curl equivalents (opcional)
+# Create
+curl -v -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"name":"Teste","email":"teste@example.com","age":20}'
+
+# List
+curl http://localhost:3000/users
