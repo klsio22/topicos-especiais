@@ -22,10 +22,10 @@ Content-Type: application/json
 GET http://localhost:3000/users
 
 ### Get one user by id (troque o 1 pelo id real retornado no create)
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/6
 
 ### Update user
-PATCH http://localhost:3000/users/1
+PATCH http://localhost:3000/users/6
 Content-Type: application/json
 
 {
@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 ### Delete user
-DELETE http://localhost:3000/users/1
+DELETE http://localhost:3000/users/7
 
 ### Curl equivalents (opcional)
 # Create
