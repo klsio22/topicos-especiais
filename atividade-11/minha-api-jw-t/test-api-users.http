@@ -1,0 +1,74 @@
+### 11.1 Registro de novo usuário
+# Requisição: POST http://localhost:3000/auth/register
+# Body (JSON)
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "teste01@example.com",
+  "password": "123456",
+  "name": "Usuário de Teste"
+}
+
+# Resposta esperada: 201 Created
+# Exemplo de resposta esperada (sem senha):
+# {
+#   "id": 1,
+#   "email": "teste@example.com",
+#   "name": "Usuário de Teste"
+# }
+
+### 11.2 Login com usuário cadastrado
+# Requisição: POST http://localhost:3000/auth/login
+# Body (JSON)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@example.com",
+  "password": "123456"
+}
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta:
+# {
+#   "access_token": "<JWT_TOKEN_AQUI>"
+# }
+
+# --- Como usar o token nas requisições abaixo
+# 1) Copie o valor de `access_token` retornado no passo de login.
+# 2) Cole o token no lugar de <SEU_TOKEN_AQUI> no header Authorization abaixo.
+# Dica: se você usa a extensão REST Client no VS Code, pode definir uma variável de ambiente
+# ou editar manualmente o template Authorization: Bearer <SEU_TOKEN_AQUI>.
+
+### 11.3 Acesso a rota protegida SEM token (deve falhar)
+# Requisição: GET http://localhost:3000/auth/perfil (sem Authorization header)
+GET http://localhost:3000/auth/perfil
+
+# Resposta esperada: 401 Unauthorized
+
+### 11.4 Acesso a rota protegida COM token (deve ter sucesso)
+# Requisição: GET http://localhost:3000/auth/perfil
+# Header: Authorization: Bearer <SEU_TOKEN_AQUI>
+GET http://localhost:3000/auth/perfil
+Authorization: Bearer <SEU_TOKEN_AQUI>
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta esperada:
+# {
+#   "message": "Você acessou uma rota protegida!",
+#   "user": {
+#     "id": 1,
+#     "email": "teste@example.com",
+#     "name": "Usuário de Teste"
+#   }
+# }
+
+# --- Testes adicionais (opcionais)
+# - Tentar login com senha errada -> deve retornar 401 Unauthorized.
+# - Gerar token curto (expiresIn: '10s') e verificar comportamento quando expirar.
+
+# Observações de uso:
+# - Certifique-se de que a API está rodando em http://localhost:3000 (npm run start:dev).
+# - Se usar a extensão REST Client do VS Code, abra este arquivo e clique em "Send Request" acima de cada request.
+# - Para facilitar, você pode salvar o token em uma variável do REST Client ou colar manualmente.
