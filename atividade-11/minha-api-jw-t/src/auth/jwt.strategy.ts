@@ -11,11 +11,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       fromAuthHeaderAsBearerToken: () => (req: any) => string | null;
     };
     const jwtFromRequest = extractor.fromAuthHeaderAsBearerToken();
-
-    // Some typings from passport-jwt / @nestjs/passport trigger a false-positive for
-    // @typescript-eslint/no-unsafe-call when calling into the Passport helper. We
-    // disable it for this call only.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       jwtFromRequest,
       ignoreExpiration: false,
