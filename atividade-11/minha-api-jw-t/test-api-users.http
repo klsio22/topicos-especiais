@@ -1,6 +1,8 @@
 ### 11.1 Registro de novo usuário
+
 # Requisição: POST http://localhost:3000/auth/register
 # Body (JSON)
+
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
@@ -19,13 +21,15 @@ Content-Type: application/json
 # }
 
 ### 11.2 Login com usuário cadastrado
+
 # Requisição: POST http://localhost:3000/auth/login
 # Body (JSON)
+
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "teste@example.com",
+  "email": "alexandre.silva@example.com",
   "password": "123456"
 }
 
@@ -42,16 +46,20 @@ Content-Type: application/json
 # ou editar manualmente o template Authorization: Bearer <SEU_TOKEN_AQUI>.
 
 ### 11.3 Acesso a rota protegida SEM token (deve falhar)
+
 # Requisição: GET http://localhost:3000/auth/perfil (sem Authorization header)
+
 GET http://localhost:3000/auth/perfil
 
 # Resposta esperada: 401 Unauthorized
 
 ### 11.4 Acesso a rota protegida COM token (deve ter sucesso)
+
 # Requisição: GET http://localhost:3000/auth/perfil
 # Header: Authorization: Bearer <SEU_TOKEN_AQUI>
+
 GET http://localhost:3000/auth/perfil
-Authorization: Bearer <SEU_TOKEN_AQUI>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoiYWxleGFuZHJlLnNpbHZhQGV4YW1wbGUuY29tIiwiaWF0IjoxNzYxNTEzMzk2LCJleHAiOjE3NjE1MTY5OTZ9.SO0vGlnjYX7TnqStz2Ct6NKWtmYsE5uNDJonO3zMGFU
 
 # Resposta esperada: 200 OK
 # Exemplo de resposta esperada:
