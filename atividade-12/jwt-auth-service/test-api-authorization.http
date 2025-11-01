@@ -1,7 +1,4 @@
 ### 9. Testando a Autorização
-
-# Use Postman/Insomnia/REST Client (VS Code) para executar as seguintes etapas.
-
 ### Variáveis (preenchidas automaticamente após login)
 
 @baseUrl = http://localhost:3000
