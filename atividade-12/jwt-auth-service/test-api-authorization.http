@@ -40,7 +40,6 @@ Content-Type: application/json
 
 ### 9.2.1 Tornar o segundo usuário ADMIN via Prisma Studio
 
-# ⚠️ IMPORTANTE: Este passo DEVE ser feito ANTES de fazer login do usuário admin (9.4)
 # Se você fizer login sem alterar o role, o token conterá role: "USER" e a requisição /admin retornará 403.
 # No terminal, execute: npx prisma studio
 # Abra a interface, localize o usuário com email "{{adminEmail}}" e altere o campo `role` para `ADMIN`, salve.
