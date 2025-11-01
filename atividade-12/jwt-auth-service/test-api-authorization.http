@@ -1,0 +1,89 @@
+### 9. Testando a Autorização
+# Use Postman/Insomnia/REST Client (VS Code) para executar as seguintes etapas.
+
+### 9.1 Registrar o usuário padrão (role = USER)
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "usuario.user@example.com",
+  "password": "123456",
+  "name": "Usuário Padrão"
+}
+
+# Resposta esperada: 201 Created (objeto do usuário sem senha)
+
+### 9.2 Registrar o segundo usuário (vamos torná-lo ADMIN manualmente)
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "usuario.admin@example.com",
+  "password": "123456",
+  "name": "Usuário Para Admin"
+}
+
+# Resposta esperada: 201 Created (objeto do usuário sem senha)
+
+### 9.2.1 Tornar o segundo usuário ADMIN via Prisma Studio
+# No terminal, execute: npx prisma studio
+# Abra a interface, localize o usuário com email "usuario.admin@example.com" e altere o campo `role` para `ADMIN`, salve.
+
+### 9.3 Login do USER (pegar token)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario.user@example.com",
+  "password": "123456"
+}
+
+# Resposta esperada: 200 OK
+# Exemplo:
+# {
+#   "access_token": "<TOKEN_DO_USER>"
+# }
+
+### 9.4 Login do ADMIN (pegar token)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario.admin@example.com",
+  "password": "123456"
+}
+
+# Resposta esperada: 200 OK
+# Exemplo:
+# {
+#   "access_token": "<TOKEN_DO_ADMIN>"
+# }
+
+### 9.5 Testar acesso a /admin com TOKEN do USER (deve retornar 403)
+GET http://localhost:3000/admin
+Authorization: Bearer <TOKEN_DO_USER>
+
+# Resposta esperada: 403 Forbidden
+# Exemplo de resposta esperada:
+# {
+#   "statusCode": 403,
+#   "message": "Forbidden resource",
+#   "error": "Forbidden"
+# }
+
+### 9.6 Testar acesso a /admin com TOKEN do ADMIN (deve retornar 200)
+GET http://localhost:3000/admin
+Authorization: Bearer <TOKEN_DO_ADMIN>
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta esperada:
+# {
+#   "message": "Bem-vindo, Admin!"
+# }
+
+### Dicas de uso
+# - Se usar o VS Code REST Client, você pode executar cada bloco clicando em "Send Request".
+# - Copie o valor de `access_token` retornado no login e cole no header Authorization: Bearer <TOKEN>.
+# - Se preferir, configure variáveis de ambiente do REST Client para armazenar o token entre requisições.
+# - Certifique-se de que a API está rodando em http://localhost:3000 (npm run start:dev).
+# - Caso receba 401 Unauthorized em vez de 403, verifique se o token pertence ao usuário correto e se o `role` do usuário foi mesmo atualizado para ADMIN no Prisma Studio.
