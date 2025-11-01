@@ -1,7 +1,7 @@
 {
-  "name": "minha-api-jw-t",
+  "name": "jwt-auth-service",
   "version": "0.0.1",
-  "description": "",
+  "description": "JWT Authentication Service built with NestJS and Prisma",
   "author": "",
   "private": true,
   "license": "UNLICENSED",

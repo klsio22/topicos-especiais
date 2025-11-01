@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: mysql:8.0
-    container_name: prisma_mysql_02
+    container_name: prisma_mysql_03
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
