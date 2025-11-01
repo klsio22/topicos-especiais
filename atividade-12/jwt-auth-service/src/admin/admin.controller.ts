@@ -3,12 +3,12 @@ import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { PrismaService } from '../prisma/prisma.service';
+import { AdminService } from './admin.service';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AdminController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @Get()
   @Roles('ADMIN')
@@ -25,15 +25,7 @@ export class AdminController {
   @Get('users')
   @Roles('ADMIN')
   async getUsers() {
-    const users = await this.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-      },
-    });
+    const users = await this.adminService.getUsers();
     return {
       message: 'Lista de usuários (apenas para ADMINs)',
       users,
