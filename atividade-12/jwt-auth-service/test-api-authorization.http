@@ -1,7 +1,9 @@
 ### 9. Testando a Autorização
+
 # Use Postman/Insomnia/REST Client (VS Code) para executar as seguintes etapas.
 
 ### 9.1 Registrar o usuário padrão (role = USER)
+
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
@@ -14,22 +16,25 @@ Content-Type: application/json
 # Resposta esperada: 201 Created (objeto do usuário sem senha)
 
 ### 9.2 Registrar o segundo usuário (vamos torná-lo ADMIN manualmente)
+
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "email": "usuario.admin@example.com",
-  "password": "123456",
+  "password": "654321",
   "name": "Usuário Para Admin"
 }
 
 # Resposta esperada: 201 Created (objeto do usuário sem senha)
 
 ### 9.2.1 Tornar o segundo usuário ADMIN via Prisma Studio
+
 # No terminal, execute: npx prisma studio
 # Abra a interface, localize o usuário com email "usuario.admin@example.com" e altere o campo `role` para `ADMIN`, salve.
 
 ### 9.3 Login do USER (pegar token)
+
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -44,13 +49,27 @@ Content-Type: application/json
 #   "access_token": "<TOKEN_DO_USER>"
 # }
 
+### 9.3.1 Verificar perfil (token do USER)
+GET http://localhost:3000/auth/perfil
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoidXN1YXJpby51c2VyQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjIwMzQ4MDAsImV4cCI6MTc2MjAzODQwMH0.jarglfiF1WsMVYVxv4tT-VoxgcK6gqChv9I1GxCbEQk
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta (note o campo role):
+# {
+#   "id": 1,
+#   "email": "usuario.user@example.com",
+#   "name": "Usuário Padrão",
+#   "role": "USER"
+# }
+
 ### 9.4 Login do ADMIN (pegar token)
+
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
   "email": "usuario.admin@example.com",
-  "password": "123456"
+  "password": "654321"
 }
 
 # Resposta esperada: 200 OK
@@ -59,9 +78,23 @@ Content-Type: application/json
 #   "access_token": "<TOKEN_DO_ADMIN>"
 # }
 
+### 9.4.1 Verificar perfil (token do ADMIN)
+GET http://localhost:3000/auth/perfil
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoidXN1YXJpby5hZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MjAzNDgzMiwiZXhwIjoxNzYyMDM4NDMyfQ.Y2xFOQrZXtoM-5qhIoBU4uuzPiUJXOwiiZq4AWDo3pM
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta (note o campo role):
+# {
+#   "id": 2,
+#   "email": "usuario.admin@example.com",
+#   "name": "Usuário Para Admin",
+#   "role": "ADMIN"
+# }
+
 ### 9.5 Testar acesso a /admin com TOKEN do USER (deve retornar 403)
+
 GET http://localhost:3000/admin
-Authorization: Bearer <TOKEN_DO_USER>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoidXN1YXJpby5hZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYyMDM0MDAxLCJleHAiOjE3NjIwMzc2MDF9.iUKBwojXDNdrQwyf6eze9PZhr8nosCHdelj0SOS5NQI
 
 # Resposta esperada: 403 Forbidden
 # Exemplo de resposta esperada:
@@ -72,16 +105,35 @@ Authorization: Bearer <TOKEN_DO_USER>
 # }
 
 ### 9.6 Testar acesso a /admin com TOKEN do ADMIN (deve retornar 200)
+
 GET http://localhost:3000/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoidXN1YXJpby5hZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYyMDM0MDAxLCJleHAiOjE3NjIwMzc2MDF9.iUKBwojXDNdrQwyf6eze9PZhr8nosCHdelj0SOS5NQI
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta esperada:
+# {
+#   "message": "Bem-vindo, Admin!",
+#   "user": {
+#     "id": 2,
+#     "email": "usuario.admin@example.com",
+#     "role": "ADMIN"
+#   }
+# }
+
+### 9.7 (Opcional) Testar acesso a /admin/users com TOKEN do ADMIN
+
+GET http://localhost:3000/admin/users
 Authorization: Bearer <TOKEN_DO_ADMIN>
 
 # Resposta esperada: 200 OK
 # Exemplo de resposta esperada:
 # {
-#   "message": "Bem-vindo, Admin!"
+#   "message": "Lista de usuários (apenas para ADMINs)",
+#   "users": []
 # }
 
 ### Dicas de uso
+
 # - Se usar o VS Code REST Client, você pode executar cada bloco clicando em "Send Request".
 # - Copie o valor de `access_token` retornado no login e cole no header Authorization: Bearer <TOKEN>.
 # - Se preferir, configure variáveis de ambiente do REST Client para armazenar o token entre requisições.
