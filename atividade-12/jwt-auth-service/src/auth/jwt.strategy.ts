@@ -16,6 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest,
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'minha_chave_secreta',
+      algorithms: ['HS256'],
     });
   }
 
