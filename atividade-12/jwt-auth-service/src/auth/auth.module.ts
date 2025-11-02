@@ -9,8 +9,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      signOptions: { expiresIn: '1h', algorithm: 'HS256' },
+    JwtModule.registerAsync({
+      useFactory: () => {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error('JWT_SECRET environment variable is not set');
+        }
+        return {
+          secret,
+          signOptions: { expiresIn: '1h', algorithm: 'HS256' },
+        };
+      },
     }),
   ],
   controllers: [AuthController],
