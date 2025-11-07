@@ -8,10 +8,11 @@ import type { Request } from 'express';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly prisma: PrismaService) {
-    const extractor = ExtractJwt as unknown as {
+    const extractor = ExtractJwt as {
       fromAuthHeaderAsBearerToken: () => (req: Request) => string | null;
     };
     const jwtFromRequest = extractor.fromAuthHeaderAsBearerToken();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       jwtFromRequest,
       ignoreExpiration: false,

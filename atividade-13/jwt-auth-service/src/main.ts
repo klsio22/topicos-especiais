@@ -12,6 +12,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Swagger configuration
+
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
   const config = new DocumentBuilder()
     .setTitle('API com Swagger')
     .setDescription('Documentação automática da API com Swagger')
@@ -21,17 +23,16 @@ async function bootstrap() {
 
   const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
   // optionally write swagger.json to project root
   try {
     writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
-  } catch (err) {
+  } catch {
     // ignore write errors in environments without write permission
-    void err;
   }
 
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap().catch((err) => {
   console.error(err);
   process.exit(1);
