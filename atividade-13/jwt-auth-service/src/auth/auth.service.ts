@@ -12,7 +12,7 @@ import type { User } from '../../generated/prisma';
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(email: string, password: string, name?: string) {

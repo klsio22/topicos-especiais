@@ -4,7 +4,14 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AdminService } from './admin.service';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('admin')
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AdminController {
@@ -12,6 +19,9 @@ export class AdminController {
 
   @Get()
   @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Endpoint de administração (apenas ADMIN)' })
+  @ApiResponse({ status: 200, description: 'Acesso autorizado para ADMIN' })
   getAdminData(
     @Req()
     req: Request & { user?: { id: number; email: string; role: string } },
