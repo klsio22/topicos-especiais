@@ -1,0 +1,187 @@
+### 9. Testando a Autorização
+### Variáveis (preenchidas automaticamente após login)
+
+@baseUrl = http://localhost:3000
+@userEmail = usuario.user@example.com
+@userPassword = 123456
+@adminEmail = usuario.admin@example.com
+@adminPassword = 654321
+@tokenUser = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoidXN1YXJpby51c2VyQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjIwMzU0MzgsImV4cCI6MTc2MjAzOTAzOH0.O0NczM4SZZg90RyrWb-Iud9NCxDJrKyEvv1D7-XBVr4
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoidXN1YXJpby5hZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MjAzNTQ1MywiZXhwIjoxNzYyMDM5MDUzfQ.ibYDWZeKiLCR2FFEWZlKq7Rb3eHxomW6qJBmPM5H700
+
+### 9.1 Registrar o usuário padrão (role = USER)
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "name": "Usuário Padrão"
+}
+
+# Resposta esperada: 201 Created (objeto do usuário sem senha)
+
+### 9.2 Registrar o segundo usuário (vamos torná-lo ADMIN manualmente)
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "name": "Usuário Para Admin"
+}
+
+# Resposta esperada: 201 Created (objeto do usuário sem senha)
+
+### 9.2.1 Tornar o segundo usuário ADMIN via Prisma Studio
+
+# Se você fizer login sem alterar o role, o token conterá role: "USER" e a requisição /admin retornará 403.
+# No terminal, execute: npx prisma studio
+# Abra a interface, localize o usuário com email "{{adminEmail}}" e altere o campo `role` para `ADMIN`, salve.
+
+### 9.3 Login do USER (pegar token)
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+# Depois de executar, copie o access_token e atualize a variável @tokenUser acima
+
+### 9.3.1 Verificar perfil (token do USER)
+
+GET {{baseUrl}}/auth/perfil
+Authorization: Bearer {{tokenUser}}
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta (note o campo role):
+# {
+#   "id": 1,
+#   "email": "usuario.user@example.com",
+#   "name": "Usuário Padrão",
+#   "role": "USER"
+# }
+
+### 9.4 Login do ADMIN (pegar token)
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+# Depois de executar, copie o access_token e atualize a variável @tokenAdmin acima
+
+### 9.4.1 Verificar perfil (token do ADMIN)
+
+GET {{baseUrl}}/auth/perfil
+Authorization: Bearer {{tokenAdmin}}
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta (note o campo role):
+# {
+#   "id": 2,
+#   "email": "usuario.admin@example.com",
+#   "name": "Usuário Para Admin",
+#   "role": "ADMIN"
+# }
+
+### 9.5 Testar acesso a /admin com TOKEN do USER (deve retornar 403)
+
+GET {{baseUrl}}/admin
+Authorization: Bearer {{tokenUser}}
+
+# Resposta esperada: 403 Forbidden
+# Exemplo de resposta esperada:
+# {
+#   "statusCode": 403,
+#   "message": "Insufficient permissions",
+#   "error": "Forbidden"
+# }
+
+### 9.6 Testar acesso a /admin com TOKEN do ADMIN (deve retornar 200)
+
+GET {{baseUrl}}/admin
+Authorization: Bearer {{tokenAdmin}}
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta esperada:
+# {
+#   "message": "Bem-vindo, Admin!",
+#   "user": {
+#     "id": 2,
+#     "email": "usuario.admin@example.com",
+#     "role": "ADMIN"
+#   }
+# }
+
+### 9.7 (Opcional) Testar acesso a /admin/users com TOKEN do ADMIN
+
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{tokenAdmin}}
+
+# Resposta esperada: 200 OK
+# Exemplo de resposta esperada:
+# {
+#   "message": "Lista de usuários (apenas para ADMINs)",
+#   "users": [
+#     {
+#       "id": 1,
+#       "email": "usuario.user@example.com",
+#       "name": "Usuário Padrão",
+#       "role": "USER",
+#       "createdAt": "2025-11-01T..."
+#     },
+#     {
+#       "id": 2,
+#       "email": "usuario.admin@example.com",
+#       "name": "Usuário Para Admin",
+#       "role": "ADMIN",
+#       "createdAt": "2025-11-01T..."
+#     }
+#   ]
+# }
+
+### Dicas de uso
+
+# 1. VARIÁVEIS:
+#    Após cada login (9.3 e 9.4), copie o access_token retornado e atualize as variáveis:
+#    - Linha 8:  @tokenUser = seu_token_aqui
+#    - Linha 9:  @tokenAdmin = seu_token_aqui
+#    Os tokens serão usados automaticamente nas requisições subsequentes.
+# 2. COMO COPIAR O TOKEN:
+#    - Execute o login (9.3 ou 9.4)
+#    - Na resposta, localize o campo "access_token"
+#    - Copie TODO o valor do token (sem as aspas)
+#    - Cole na variável correspondente no topo do arquivo
+# 3. ORDEM DE EXECUÇÃO (IMPORTANTE):
+#    1. 9.1 - Registrar USER
+#    2. 9.2 - Registrar ADMIN-to-be
+#    3. 9.2.1 - Alterar role para ADMIN no Prisma Studio (ANTES do login!)
+#    4. 9.3 - Login USER → Copiar token para @tokenUser
+#    5. 9.3.1 - Verificar perfil USER
+#    6. 9.4 - Login ADMIN → Copiar token para @tokenAdmin
+#    7. 9.4.1 - Verificar perfil ADMIN
+#    8. 9.5 - Testar /admin com USER (esperar 403)
+#    9. 9.6 - Testar /admin com ADMIN (esperar 200)
+#    10. 9.7 - (Opcional) Testar /admin/users com ADMIN
+# 4. REST CLIENT (VS Code):
+#    - Clique em "Send Request" acima de cada bloco
+#    - Ou use atalho: Ctrl+Alt+R (Windows/Linux) ou Cmd+Alt+R (Mac)
+# 5. DECODIFICAR JWT:
+#    - Acesse https://jwt.io
+#    - Cole o access_token na seção "Encoded"
+#    - Veja o payload no lado "Decoded"
+#    - Confirme que o campo "role" está correto
+# 6. SOLUÇÃO DE PROBLEMAS:
+#    - 403 Forbidden: O token tem role "USER", não "ADMIN". Refaça login após alterar no Studio.
+#    - 401 Unauthorized: Token inválido ou expirado. Refaça login (9.3 ou 9.4).
+#    - 404 Not Found: A rota não existe. Certifique-se que o servidor está rodando.
+#    - Variáveis vazias: Verifique se atualizou as variáveis @tokenUser e @tokenAdmin no topo.
