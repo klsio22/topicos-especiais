@@ -12,6 +12,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('admin')
+@ApiBearerAuth()
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AdminController {
@@ -34,6 +35,16 @@ export class AdminController {
 
   @Get('users')
   @Roles('ADMIN')
+  @ApiOperation({ summary: 'Lista de usuários (somente ADMIN)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuários retornada com sucesso',
+  })
+  @ApiResponse({ status: 401, description: 'Token ausente ou inválido' })
+  @ApiResponse({
+    status: 403,
+    description: 'Usuário sem permissão (não ADMIN)',
+  })
   async getUsers() {
     const users = await this.adminService.getUsers();
     return {

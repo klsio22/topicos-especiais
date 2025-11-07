@@ -100,6 +100,9 @@
         "security": [
           {
             "bearer": []
+          },
+          {
+            "bearer": []
           }
         ],
         "summary": "Endpoint de administração (apenas ADMIN)",
@@ -114,9 +117,21 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Lista de usuários retornada com sucesso"
+          },
+          "401": {
+            "description": "Token ausente ou inválido"
+          },
+          "403": {
+            "description": "Usuário sem permissão (não ADMIN)"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lista de usuários (somente ADMIN)",
         "tags": [
           "admin"
         ]

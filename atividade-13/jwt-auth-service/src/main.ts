@@ -13,6 +13,7 @@ async function bootstrap() {
 
   // Swagger configuration
 
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
   const config = new DocumentBuilder()
     .setTitle('API com Swagger')
     .setDescription('Documentação automática da API com Swagger')
